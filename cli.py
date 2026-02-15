@@ -40,6 +40,15 @@ def main():
         from stemslib.splitter import split_file
         stems_folder = split_file(args.file, args.out)
         print (f"Stems saved to: {stems_folder}")
+        if args.mix:
+               print (f"Creating mix excluding: {args.exclude}")
+               from stemslib.mixer import mix_stems
+               mix_stems(stems_folder, exclude=args.exclude)
+               print (f"Mix audio saved to: {stems_folder}")
+    elif args.command == "mix":
+        from stemslib.mixer import mix_stems
+        output_path = mix_stems(args.stems_folder, exclude=args.exclude, output_path=args.output)
+        print (f"Mixed audio saved to: {output_path}")
     else:
         print (f"Command '{args.command}' not implemented yet.")
 

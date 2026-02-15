@@ -13,11 +13,8 @@ def split_file(input_path, output_dir):
     input_path = Path(input_path).resolve()
     output_dir = Path(output_dir).resolve()
 
-    if not input_path.exists():
+    if not input_path.exists() or not input_path.is_file():
         raise FileNotFoundError(f"File not found: {input_path}")
-    
-    if not input_path.is_file():
-        raise ValueError(f"Invalid file: {input_path}")
     
     output_dir.mkdir(parents=True, exist_ok=True)
     
