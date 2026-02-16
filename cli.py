@@ -49,6 +49,9 @@ def main():
         from stemslib.mixer import mix_stems
         output_path = mix_stems(args.stems_folder, exclude=args.exclude, output_path=args.output)
         print (f"Mixed audio saved to: {output_path}")
+    elif args.command == "batch":
+        from stemslib.batch import batch_process
+        batch_process(args.folder, args.out, mix=args.mix, exclude=args.exclude)
     else:
         print (f"Command '{args.command}' not implemented yet.")
 

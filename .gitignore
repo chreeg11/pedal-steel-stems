@@ -2,6 +2,7 @@ docs/
 stems/
 *.wav
 *.mp3
+*.flac
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
