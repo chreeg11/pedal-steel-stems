@@ -1,32 +1,23 @@
-from pathlib import Path
-from demucs.separate import main as separate
-from .utils import DEFAULT_MODEL
+from .backends import get_backend
+from .utils import DEFAULT_BACKEND, resolve_model_name
 
-def split_file(input_path, output_dir, model=DEFAULT_MODEL):
+
+def split_file(input_path, output_dir, model=None, backend=DEFAULT_BACKEND, device=None):
     """
-    Separate a single audio file into stems using Demucs.
-    
+    Separate a single audio file into stems using the selected backend.
+
     Args:
         input_path (str): Path to the input audio file.
         output_dir (str): Directory where the separated stems will be saved.
-        model (str): Demucs model name to use.
+        model (str): Backend-specific model name.
+        backend (str): Separation backend name (for example: demucs or audio-separator).
+        device (str): Optional torch device, such as mps or cpu.
     """
-    input_path = Path(input_path).resolve()
-    output_dir = Path(output_dir).resolve()
-
-    if not input_path.exists() or not input_path.is_file():
-        raise FileNotFoundError(f"File not found: {input_path}")
-    
-    output_dir.mkdir(parents=True, exist_ok=True)
-    
-    print(f"Separating: {input_path.name}")
-    
-    separate([
-        "--name", model,
-        "--out", str(output_dir),
-        str(input_path)
-    ])
-
-    # Return the path to the stems folder
-    stems_folder = output_dir / model / input_path.stem
-    return stems_folder
+    backend_impl = get_backend(backend)
+    resolved_model = resolve_model_name(backend, model) if model is not None else None
+    return backend_impl.separate_file(
+        input_path=input_path,
+        output_dir=output_dir,
+        model=resolved_model,
+        device=device,
+    )

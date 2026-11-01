@@ -1,0 +1,8 @@
+# Keep PyTorch aligned with audio-separator on Apple Silicon.
+# torchaudio is pulled by Demucs/runtime when available, but the package set
+# does not publish a 2.13.x torchaudio wheel for macOS arm64 in this environment.
+demucs==4.0.1
+audio-separator[cpu]==0.48.0
+audioread>=3.0.1
+torch==2.13.0
+torchcodec==0.17.0
