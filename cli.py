@@ -1,5 +1,5 @@
 import argparse
-from stemslib.utils import DEFAULT_OUTPUT_DIR, DEFAULT_EXCLUDE, STEM_NAMES
+from stemslib.utils import DEFAULT_OUTPUT_DIR, DEFAULT_EXCLUDE, STEM_NAMES, DEFAULT_MODEL
 
 def build_parser():
     parser = argparse.ArgumentParser(prog="pedal-steel-stems",
@@ -8,9 +8,11 @@ def build_parser():
     subparsers = parser.add_subparsers(dest="command", required=True)
     
     # split command
-    split_cmd = subparsers.add_parser("split", help="Separate a single audil file into stems")
+    split_cmd = subparsers.add_parser("split", help="Separate a single audio file into stems")
     split_cmd.add_argument("file", help="Path to the audio file")
     split_cmd.add_argument("--out", default=DEFAULT_OUTPUT_DIR, help="Output directory")
+    split_cmd.add_argument("--model", default=DEFAULT_MODEL,
+                           help=f"Demucs model to use (default: {DEFAULT_MODEL})")
     split_cmd.add_argument("--mix", action="store_true", help="Also create a mix excluding stems")
     split_cmd.add_argument("--exclude", nargs="+", default=DEFAULT_EXCLUDE, choices=STEM_NAMES,
                            help="Stems to exclude when creating the mix (default: guitar)")
@@ -19,6 +21,8 @@ def build_parser():
     batch_cmd = subparsers.add_parser("batch", help="Separate all audio files in a folder")
     batch_cmd.add_argument("folder", help="Path to the folder containing audio files")
     batch_cmd.add_argument("--out", default=DEFAULT_OUTPUT_DIR, help="Output directory")
+    batch_cmd.add_argument("--model", default=DEFAULT_MODEL,
+                           help=f"Demucs model to use (default: {DEFAULT_MODEL})")
     batch_cmd.add_argument("--mix", action="store_true", help="Also create mixes excluding stems")
     batch_cmd.add_argument("--exclude", nargs="+", default=DEFAULT_EXCLUDE, choices=STEM_NAMES,
                            help="Stems to exclude when creating the mixes (default: guitar)")
@@ -38,7 +42,7 @@ def main():
 
     if args.command == "split":
         from stemslib.splitter import split_file
-        stems_folder = split_file(args.file, args.out)
+        stems_folder = split_file(args.file, args.out, model=args.model)
         print (f"Stems saved to: {stems_folder}")
         if args.mix:
                print (f"Creating mix excluding: {args.exclude}")
@@ -51,7 +55,7 @@ def main():
         print (f"Mixed audio saved to: {output_path}")
     elif args.command == "batch":
         from stemslib.batch import batch_process
-        batch_process(args.folder, args.out, mix=args.mix, exclude=args.exclude)
+        batch_process(args.folder, args.out, model=args.model, mix=args.mix, exclude=args.exclude)
     else:
         print (f"Command '{args.command}' not implemented yet.")
 

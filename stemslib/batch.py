@@ -1,15 +1,16 @@
 from pathlib import Path
 from .splitter import split_file
 from .mixer import mix_stems
-from .utils import SUPPORTED_FORMATS
+from .utils import SUPPORTED_FORMATS, DEFAULT_MODEL
 
-def batch_process(folder, output_dir, mix=False, exclude=None):
+def batch_process(folder, output_dir, model=DEFAULT_MODEL, mix=False, exclude=None):
     """
     Process all audio files in a folder, separating them into stems and optionally creating mixes.
     
     Args:
         folder (str): Path to the folder containing audio files.
         output_dir (str): Directory to save the separated stems and mixes.
+        model (str): Demucs model name to use.
         mix (bool): Whether to create mixes excluding specified stems.
         exclude (list): List of stem names to exclude when creating mixes.
     """
@@ -31,7 +32,7 @@ def batch_process(folder, output_dir, mix=False, exclude=None):
     
     for audio_file in audio_files:
         print(f"\nProcessing: {audio_file.name}")
-        stems_folder = split_file(str(audio_file), output_dir)
+        stems_folder = split_file(str(audio_file), output_dir, model=model)
         print(f"  Stems saved to: {stems_folder}")
 
         if mix:

@@ -2,13 +2,14 @@ from pathlib import Path
 from demucs.separate import main as separate
 from .utils import DEFAULT_MODEL
 
-def split_file(input_path, output_dir):
+def split_file(input_path, output_dir, model=DEFAULT_MODEL):
     """
     Separate a single audio file into stems using Demucs.
     
     Args:
         input_path (str): Path to the input audio file.
         output_dir (str): Directory where the separated stems will be saved.
+        model (str): Demucs model name to use.
     """
     input_path = Path(input_path).resolve()
     output_dir = Path(output_dir).resolve()
@@ -21,11 +22,11 @@ def split_file(input_path, output_dir):
     print(f"Separating: {input_path.name}")
     
     separate([
-        "--name", DEFAULT_MODEL,
+        "--name", model,
         "--out", str(output_dir),
         str(input_path)
     ])
 
     # Return the path to the stems folder
-    stems_folder = output_dir / DEFAULT_MODEL / input_path.stem
+    stems_folder = output_dir / model / input_path.stem
     return stems_folder
